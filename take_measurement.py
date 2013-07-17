@@ -2,14 +2,36 @@ import cv2
 import numpy as np
 import pylab as pl
 
+'''
+Add-on to the open-source spectrometers developed by 'http://spectralworkbench.org/'. Reads webcam stream for a given number of frames and averages over a few lines in the picture, as well as time. 
+'''
+
 def take_measurement(cam, res_y, res_x, channels, time):
+	'''
+	input: 
+	cam: 0: intern, 1: USB webcam 
+	res_y: resolution in y-direction, [px]
+	res_x: resolution in x-direction, [px]
+	channels: number of channels, e.g. 3 for RGB
+	time: number of frames to average over
+
+	output:
+	res0: complete data array [res_y, res_x, channels, time]
+	res1: averaged over channels [res_y, res_x, time]
+	res2: averaged over channels and time [res_y, res_x]
+	'''
+
+	# empty result array
 	res0 = np.zeros((res_y, res_x, channels, time))
 
+	# open webcam stream
 	c = cv2.VideoCapture(cam)
 
+	# write stream to array
 	for i in range(time):
 	    res0[:,:,:,i] = c.read()[1]
 
+	# close webcam stream
 	c.release()
 
 	# sum over RGB channels
